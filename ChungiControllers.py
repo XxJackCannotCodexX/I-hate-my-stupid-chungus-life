@@ -50,7 +50,8 @@ class ChungiController():
             if self.myGrowth[target] >= self.GrowConstant:
                 self.Console.chungoid +=1
                 self.Console.chungi -=1
-                self.Next.myWeight.append({target:math.floor(self.myWeight.pop(target)*1.5+5)})
+                self.myGrowth.pop(target)
+                self.Next.myWeight.update({target:math.floor(self.myWeight.pop(target)*1.5+5)})
                 self.Console.Loop()
             else:
                 self.Console.Loop()

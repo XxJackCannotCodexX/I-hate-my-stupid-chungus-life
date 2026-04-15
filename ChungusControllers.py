@@ -46,11 +46,14 @@ class ChungusController():
             self.myGrowth[target]+=food
             self.GrowUp(target)
     def GrowUp(self,target):
+            print("hi")
             if self.myGrowth[target] >= self.GrowConstant:
                 self.Console.chungi +=1
                 self.Console.chungus -=1
-                self.Next.myGrowth.append({target:0})
-                self.Next.myWeight.append({target:math.floor(self.myWeight.pop(target)*1.5+5)})
+                self.myGrowth.pop(target)
+                self.Next.myGrowth.update({target:0})
+                self.Next.myWeight.update({target:math.floor(self.myWeight.pop(target)*1.5+5)})
+                print("One of your chungus grew into a chungi.")
                 self.Console.Loop()
             else:
                 self.Console.Loop()
@@ -65,8 +68,6 @@ class ChungusController():
                 self.Console.inventory["Chungus Meat"] = self.Console.inventory["Chungus Meat"] + (math.ceil(1+(math.floor(self.myWeight[target]/10))*tools))
             self.myGrowth.pop(target)
             self.myWeight.pop(target)
-            print(target)
-            print(self.myWeight)
             self.Console.chungus -=1
         elif Feedtype==1:
             target=list(self.myWeight.keys())[0]
