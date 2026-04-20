@@ -1,3 +1,4 @@
+import math
 class Commands():
     def __init__(self):
         #Commands you have
@@ -30,6 +31,7 @@ class Commands():
         self.IndexCommand={}
         self.GlobalIDnumber=0
         self.viables=[]
+        self.laid=0
     def Help(self):
         for name, instructions in self.D_UnlockedCommands.items():
             print(f"{name}: {instructions}")
@@ -163,14 +165,35 @@ class Commands():
             self.ChungoidController.Butcher(int(choice), self.tools)
     def Milk(self):
         if self.chungoid!=0:
-            print("You managed to get a bucket of milk from you chungoids.")
-            if list(self.inventory.keys()).count("Chungus Milk")!=0:
-                self.inventory["Chungus Milk"] +=1
+            if self.Milk>4:
+                print(f"You managed to get {math.floor((self.chungoid*0.2)+1)} buckets of milk.")
+                if list(self.inventory.keys()).count("Chungus Milk")!=0:
+                    self.inventory["Chungus Milk"] +=math.floor((self.chungoid*0.2)+1)
+                else:
+                    self.inventory.update({"Chungus Milk":1})
             else:
-                self.inventory.update({"Chungus Milk":1})
+                print("You don't feel like milking a Chungoid for now.")
         else:
             print("How do you expect to get milk without any Chungoids?")
         self.Loop()
+    def Lay(self):
+        if self.chungi!=0:
+            if self.laid>4:
+                print("You managed to get one of your Chungi to lay an egg.")
+                self.Egg.NewEgg()
+            else:
+                print("You don't feel getting a Chungi to lay and egg for now.")
+        else:
+            print("How do you expect to get eggs without any Chungi?")
+        self.Loop()
+    def Incubate(self):
+        if self.chungus_egg!=0:
+            if self.incubated>4:
+                self.Egg.Incubate()
+            else:
+                print("You don't feel incubating any more eggs for now.")
+        else:
+            print("How do you expect to incubate without any eggs")
     def Loop(self):
         self.IndexCommand={}
         self.viables=[]
@@ -194,3 +217,8 @@ class Commands():
             self.Butcher()
         elif self.IndexCommand[choice]=="Milk":
             self.Milk()
+        elif self.IndexCommand[choice]=="Lay":
+            self.Lay()
+        elif self.IndexCommand[choice]=="Incubate":
+            self.Incubate()
+            
