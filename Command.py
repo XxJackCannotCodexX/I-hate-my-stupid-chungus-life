@@ -2,7 +2,7 @@ import math
 class Commands():
     def __init__(self):
         #Commands you have
-        self.UnlockedCommands=["Help","Incubate","Finances","Milk","Butcher","Market","Lay","Pass","Feed"]
+        self.UnlockedCommands=["Help","Incubate","Finances","Milk","Butcher","Market","Lay","Feed"]
         #Commands used in the market
         self.MarketCommands=["Buy","Sell","Check","Help"]
         #money
@@ -22,7 +22,7 @@ class Commands():
         #valid food:how much effect the food has
         self.foods={"Good Food":3,"Bad Food":1,"Wheat":0.5,"Deluxe Food":5,"Corporate Food": 2, "Your Lunch":10, "Chungus Meat": 0.25}
         
-        self.D_UnlockedCommands = {"Help":"Displays this", "Incubate":"Speed up a chungus eggs hatch time by stitting on it", "Finances":"View your inventory, chungus amounts, and a bunch of other finance stuff", "Milk":"Milk a chungoid, but try not to get kicked", "Butcher":"Kill one of your livestock, get more chungus meat the older they were", "Lay":"Try to get a chungi to lay an egg","Pass":"Just sleep I guess? Takes up a day.", "Market":"Go to the Market to buy or sell stuff", "Feed":"Feed your livestock to help them grow."}
+        self.D_UnlockedCommands = {"Help":"Displays this", "Incubate":"Incubate your eggs to get them closer to hatching.", "Finances":"View your inventory, chungus amounts, and a bunch of other finance stuff", "Milk":"Milk a chungoid, to get buckets of milk, more milk per Chungoid.", "Butcher":"Kill one of your livestock, get more chungus meat the older they were", "Lay":"Get your Chungi to lay an egg, more eggs per Chungi", "Market":"Go to the Market to buy or sell stuff", "Feed":"Feed your livestock to help them grow."}
         self.ChungusController = None
         self.ChungiController = None
         self.ChungoidController = None
@@ -31,8 +31,17 @@ class Commands():
         self.IndexCommand={}
         self.GlobalIDnumber=0
         self.viables=[]
-        self.laid=0
+        self.laid=5
+        self.milked=5
+        self.incubated=5
+        self.milktool=1
+        self.incubatetool=1
+        self.laytool=1
+        self.networth=0
     def Help(self):
+        self.incubated-=1
+        self.milked-=1
+        self.laid-=1
         for name, instructions in self.D_UnlockedCommands.items():
             print(f"{name}: {instructions}")
         self.Loop()
@@ -53,6 +62,9 @@ class Commands():
                 break
             else:
                 continue
+        self.incubated-=1
+        self.milked-=1
+        self.laid-=1
         if self.inventory[foodname]==1:
             self.inventory.pop(foodname)
         else:
@@ -157,6 +169,9 @@ class Commands():
                 break
             else:
                 continue
+        self.incubated-=1
+        self.milked-=1
+        self.laid-=1
         if ChungusType==str(0):
             self.ChungusController.Butcher(int(choice), self.tools)
         elif ChungusType==str(1):
@@ -165,35 +180,81 @@ class Commands():
             self.ChungoidController.Butcher(int(choice), self.tools)
     def Milk(self):
         if self.chungoid!=0:
-            if self.Milk>4:
+            if self.milked>2:
                 print(f"You managed to get {math.floor((self.chungoid*0.2)+1)} buckets of milk.")
                 if list(self.inventory.keys()).count("Chungus Milk")!=0:
-                    self.inventory["Chungus Milk"] +=math.floor((self.chungoid*0.2)+1)
+                    self.inventory["Chungus Milk"] +=math.floor(((self.chungoid*0.2)+1)*self.milktool)
+                    self.milked=0
                 else:
-                    self.inventory.update({"Chungus Milk":1})
+                    self.inventory.update({"Chungus Milk":math.floor(((self.chungoid*0.2)+1)*self.milktool)})
+                    self.milked=0
             else:
                 print("You don't feel like milking a Chungoid for now.")
+                self.milked-=1
         else:
             print("How do you expect to get milk without any Chungoids?")
         self.Loop()
     def Lay(self):
         if self.chungi!=0:
-            if self.laid>4:
-                print("You managed to get one of your Chungi to lay an egg.")
+            if self.laid>2:
+                self.laid=0
                 self.Egg.NewEgg()
             else:
                 print("You don't feel getting a Chungi to lay and egg for now.")
+                self.laid-=1
         else:
             print("How do you expect to get eggs without any Chungi?")
         self.Loop()
     def Incubate(self):
         if self.chungus_egg!=0:
-            if self.incubated>4:
+            if self.incubated>2:
+                self.incubated=0
                 self.Egg.Incubate()
             else:
                 print("You don't feel incubating any more eggs for now.")
+                self.incubated-=1
         else:
             print("How do you expect to incubate without any eggs")
+        self.Loop()
+    def Finance(self):
+        self.incubated-=1
+        self.milked-=1
+        self.laid-=1
+        print(f"Eggs: {self.chungus_egg}")
+        print(f"Chungus: {self.chungus}")
+        print(f"Chungi {self.chungi}")
+        print(f"Chungoid: {self.chungoid}")
+        print("Inventory:")
+        for item, key in enumerate(self.inventory):
+            print(f"    {key}:{item}")
+        print(f"Money: {self.money}")
+        self.networth=self.money
+        if list(self.inventory.keys()).count("Chungus Meat")!=0:
+            self.networth+=(self.inventory["Chungus Meat"]*5)
+        if list(self.inventory.keys()).count("Chungus Milk")!=0:
+            self.networth+=(self.inventory["Chungus Milk"]*10)
+        print(f"Net Worth(all sellable items liquidated): {self.networth}")
+        self.Loop()
+    def MarketEnter(self):
+        while True:
+            print("[0] Sell")
+            print("[1] Buy")
+            print("[C] Cancel")
+            choice=input("What would like too do")
+            if choice.upper()=="C":
+                self.incubated-=1
+                self.milked-=1
+                self.laid-=1
+                self.Loop()
+                break
+            elif choice=="0":
+                self.MarketSell
+            elif choice=="1":
+                self.MarketBuy
+    def MarketSell(self):
+        pass
+    def MarketBut(self):
+        pass
     def Loop(self):
         self.IndexCommand={}
         self.viables=[]
@@ -201,14 +262,15 @@ class Commands():
             print(f"[{index}] {action}.")
             self.IndexCommand.update({index:action})
         while True:
-            try:
-                choice=int(input("What do you want to do? "))
-            except:
-                continue
+            choice=input("What do you want to do? ")
             if [str(i) for i in range(len(self.UnlockedCommands))].count(choice)!=0:
                 break
             else: 
                 continue
+        choice=int(choice)
+        self.incubated+=1
+        self.milked+=1
+        self.laid+=1
         if self.IndexCommand[choice]=="Help":
             self.Help()
         elif self.IndexCommand[choice]=="Feed":
@@ -221,4 +283,6 @@ class Commands():
             self.Lay()
         elif self.IndexCommand[choice]=="Incubate":
             self.Incubate()
+        elif self.IndexCommand[choice]=="Finances":
+            self.Finance()
             
