@@ -46,6 +46,7 @@ class ChungusController():
             self.myGrowth[target]+=food
             self.GrowUp(target)
     def GrowUp(self,target):
+            print("hi")
             if self.myGrowth[target] >= self.GrowConstant:
                 self.Console.chungi +=1
                 self.Console.chungus -=1
