@@ -50,14 +50,19 @@ class Commands():
         print("[0] Random")
         print("[1] Most Weight.")
         print("[2] Least Weight.")
-        if ChungusType!=2:
+        if int(ChungusType)!=2:
             print("[3] Closest to growing.")
             print("[4] Furthest from growing.")
         print("[C] Cancel.")
         while True:
             choice=input("How would you like to feed? ")
             if [str(i) for i in range(5)].count(choice)!=0:
-                break
+                if int(ChungusType)!=2:
+                    break
+                elif [str(i) for i in range(3)].count(choice)!=0:
+                    break
+                else:
+                    continue
             elif choice.upper()=="C":
                 self.Loop()
                 break
@@ -244,10 +249,35 @@ class Commands():
             elif choice=="1":
                 self.MarketBuy()
     def MarketSell(self):
-        print("[0] Sell Milk")
-        print("[1] Sell Chungus Meat")
+        viable=[]
+        sellables=["Chungus Meat", "Chungus Milk"]
+        for name, amount in enumerate(self.inventory):
+            if sellables.count(name) and amount != 0:
+                viable.append(name)
+                print(f"[{len(self.viable)}] {name}") 
         print("[C] Cancel")
-        choice=input("Which would you like to do?")
+        if len(viable)!=0:
+            while True:
+                choice = input("Which would you like to sell?")
+                if [str(i) for i in range(len(viable))].count(choice)!=0:
+                    if viable[choice]=="Chungus Meat":
+                        self.money+=(self.inventory["Chungus Meat"]*5)
+                        self.inventory["Chungus Meat"]=0
+                        self.Loop()
+                    elif viable[choice]=="Chungus Milk":
+                        self.money+=(self.inventory["Chungus Milk"]*10)
+                        self.inventory["Chungus Milk"]=0
+                        self.Loop()
+                else:
+                    try:
+                        if choice.upper()=="C":
+                            self.Loop()
+                            break
+                    except:
+                        continue
+        else:
+            print("You have nothing to sell.")
+            self.Loop()
     def MarketBut(self):
         pass
     def Loop(self):
@@ -263,9 +293,7 @@ class Commands():
             else: 
                 continue
         choice=int(choice)
-        self.incubated+=1
-        self.milked+=1
-        self.laid+=1
+
         if self.IndexCommand[choice]=="Help":
             self.Help()
         elif self.IndexCommand[choice]=="Feed":
@@ -297,12 +325,12 @@ class ChungusController():
             self.myGrowth[target]+=food
             self.GrowUp(target)
         elif Feedtype==1:
-            biggest=list(self.myWeight.keys())[0]
+            target=list(self.myWeight.keys())[0]
             for ident, weight in self.myWeight.items():
-                if weight>self.myWeight[biggest]:
-                    biggest=ident
-            self.myWeight[biggest]+=food
-            self.myGrowth[biggest]+=food
+                if weight>self.myWeight[target]:
+                    target=ident
+            self.myWeight[target]+=food
+            self.myGrowth[target]+=food
             self.GrowUp(target)
         elif Feedtype==2:
             target=list(self.myWeight.keys())[0]
