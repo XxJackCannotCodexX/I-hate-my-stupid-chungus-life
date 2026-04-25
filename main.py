@@ -249,36 +249,82 @@ class Commands():
             elif choice=="1":
                 self.MarketBuy()
     def MarketSell(self):
-        viable=[]
+        viables=[]
         sellables=["Chungus Meat", "Chungus Milk"]
         for name, amount in enumerate(self.inventory):
             if sellables.count(name) and amount != 0:
-                viable.append(name)
-                print(f"[{len(self.viable)}] {name}") 
+                viables.append(name)
+                print(f"[{len(self.viables)-1}] {name}") 
         print("[C] Cancel")
-        if len(viable)!=0:
+        if len(viables)!=0:
             while True:
                 choice = input("Which would you like to sell?")
-                if [str(i) for i in range(len(viable))].count(choice)!=0:
-                    if viable[choice]=="Chungus Meat":
+                if [str(i) for i in range(len(viables))].count(choice)!=0:
+                    if viables[choice]=="Chungus Meat":
                         self.money+=(self.inventory["Chungus Meat"]*5)
                         self.inventory["Chungus Meat"]=0
+                        print(f"You now have {self.money} money.")
+                        self.incubated+=1
+                        self.milked+=1
+                        self.laid+=1
                         self.Loop()
-                    elif viable[choice]=="Chungus Milk":
+                        break
+                    elif viables[choice]=="Chungus Milk":
                         self.money+=(self.inventory["Chungus Milk"]*10)
                         self.inventory["Chungus Milk"]=0
+                        print(f"You now have {self.money} money.")
+                        self.incubated+=1
+                        self.milked+=1
+                        self.laid+=1
                         self.Loop()
+                        break
                 else:
                     try:
                         if choice.upper()=="C":
                             self.Loop()
                             break
+                        else:
+                            continue
                     except:
                         continue
         else:
             print("You have nothing to sell.")
             self.Loop()
-    def MarketBut(self):
+    def MarketBuy(self):
+        viables=[]
+        if self.incubatetool!=5:
+            print(f"[{len(viables)}] Better incubaters")
+            viables.append("incubate")
+        if self.laytool!=5:
+            print(f"[{len(viables)}] Better nest grass(improves egg laying)")
+            viables.append("lay")
+        if self.milktool!=5:
+            print(f"[{len(viables)}] Better milking tools")
+            viables.append("milk")
+        if self.tools!=5:
+            print(f"[{len(viables)}] Better butchering tools")
+            viables.append("butcher")
+        print(f"[{len(viables)}] Farmer hat factory")
+        viables.append("end")
+        print("[C] Cancel")
+        while True:
+            choice=input("Which would you like to buy?")
+            if [str(i) for i in range(len(viables))].count(choice)!=0:
+                if int(choice)<len(viables)-1:
+                    self.MarketBuyStuff(self.viables[choice])
+                    break
+            else:
+                try:
+                    if choice.upper()=="C":
+                        self.Loop()
+                        break
+                    else:
+                        continue
+                    except:
+                        continue
+    def MarketBuyStuff(self, stuff):
+        pass
+    def StageTwo(self):
         pass
     def Loop(self):
         self.IndexCommand={}
@@ -565,10 +611,6 @@ class ChungoidController():
             self.myWeight.pop(target)
             self.Console.chungoid -=1
         self.Console.Loop()
-    def Sell(self,target,market,day):
-        pass
-    def Milk(self,target):
-        pass
     def Feed(self,food,Feedtype):
         self.Console.incubated+=1
         self.Console.milked+=1
