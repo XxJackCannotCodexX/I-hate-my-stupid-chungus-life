@@ -24,7 +24,7 @@ class Commands():
         #inventory
         self.inventory = {"Hat_Scraps":1}
         #valid food:how much effect the food has
-        self.foods={"Good Food":3,"Bad Food":1,"Wheat":0.5,"Deluxe Food":5,"Corporate Food": 2, "Your Lunch":10, "Chungus Meat": 0.25}
+        self.foods={"Good Food":3,"Bad Food":1,"Deluxe Food":5,"Corporate Food": 2, "Chungus Meat": 1}
         
         self.D_UnlockedCommands = {"Help":"Displays this", "Incubate":"Incubate your eggs to get them closer to hatching.", "Finances":"View your inventory, chungus amounts, and a bunch of other finance stuff", "Milk":"Milk a chungoid, to get buckets of milk, more milk per Chungoid.", "Butcher":"Kill one of your livestock, get more chungus meat the older they were", "Lay":"Get your Chungi to lay an egg, more eggs per Chungi", "Market":"Go to the Market to buy or sell stuff", "Feed":"Feed your livestock to help them grow."}
         self.ChungusController = None
@@ -191,10 +191,8 @@ class Commands():
                     self.milked=0
             else:
                 print("You don't feel like milking a Chungoid for now.")
-                self.milked-=1
         else:
             print("How do you expect to get milk without any Chungoids?")
-            self.milked-=1
         self.Loop()
     def Lay(self):
         if self.chungi!=0:
@@ -203,10 +201,8 @@ class Commands():
                 self.Egg.NewEgg()
             else:
                 print("You don't feel getting a Chungi to lay and egg for now.")
-                self.laid-=1
         else:
             print("How do you expect to get eggs without any Chungi?")
-            self.laid-=1
         self.Loop()
     def Incubate(self):
         if self.chungus_egg!=0:
@@ -215,10 +211,8 @@ class Commands():
                 self.Egg.Incubate()
             else:
                 print("You don't feel incubating any more eggs for now.")
-                self.incubated-=1
         else:
             print("How do you expect to incubate without any eggs")
-            self.incubated-=1
         self.Loop()
     def Finance(self):
         print(f"Eggs: {self.chungus_egg}")
@@ -226,7 +220,7 @@ class Commands():
         print(f"Chungi {self.chungi}")
         print(f"Chungoid: {self.chungoid}")
         print("Inventory:")
-        for item, key in enumerate(self.inventory):
+        for item, key in self.inventory.items():
             print(f"    {key}:{item}")
         print(f"Money: {self.money}")
         self.networth=self.money
@@ -241,7 +235,7 @@ class Commands():
             print("[0] Sell")
             print("[1] Buy")
             print("[C] Cancel.")
-            choice=input("Which would like to do?")
+            choice=input("Which would like to do? ")
             if choice.upper()=="C":
                 self.Loop()
                 break
@@ -249,19 +243,32 @@ class Commands():
                 self.MarketSell()
             elif choice=="1":
                 self.MarketBuy()
+    def MarketBuy(self):
+        while True:
+            print("[0] Buy tools")
+            print("[1] Buy food")
+            print("[C] Cancel.")
+            choice=input("Which would like to do? ")
+            if choice.upper()=="C":
+                self.Loop()
+                break
+            elif choice=="0":
+                self.MarketBuyStuff()
+            elif choice=="1":
+                self.MarketBuyFood()
     def MarketSell(self):
         viables=[]
         sellables=["Chungus Meat", "Chungus Milk"]
-        for name, amount in enumerate(self.inventory):
+        for name, amount in self.inventory.items():
             if sellables.count(name) and amount != 0:
                 viables.append(name)
-                print(f"[{len(self.viables)-1}] {name}") 
+                print(f"[{len(self.viables)}] {name}") 
         print("[C] Cancel.")
         if len(viables)!=0:
             while True:
                 choice = input("Which would you like to sell? ")
                 if [str(i) for i in range(len(viables))].count(choice)!=0:
-                    if viables[choice]=="Chungus Meat":
+                    if viables[int(choice)]=="Chungus Meat":
                         self.money+=(self.inventory["Chungus Meat"]*5)
                         self.inventory["Chungus Meat"]=0
                         print(f"You now have {self.money} money.")
@@ -270,7 +277,7 @@ class Commands():
                         self.laid+=1
                         self.Loop()
                         break
-                    elif viables[choice]=="Chungus Milk":
+                    elif viables[int(choice)]=="Chungus Milk":
                         self.money+=(self.inventory["Chungus Milk"]*10)
                         self.inventory["Chungus Milk"]=0
                         print(f"You now have {self.money} money.")
@@ -291,40 +298,77 @@ class Commands():
         else:
             print("You have nothing to sell.")
             self.Loop()
-    def MarketBuy(self):
+    def MarketBuyFood(self):
+        viables={}
+        for index, food in enumerate(self.foods.keys()):
+            pass
+    def MarketBuyStuff(self):
         viables={}
         def canBuy(name,power):
             if power==1:
                 viables.update({"OK "+name:100})
+                print(f"[{len(viables)-1}] OK {name}. Cost: {viables["OK "+name]}")
                 viables.update({"Good "+name:250})
+                print(f"[{len(viables)-1}] Good {name}. Cost: {viables["Good "+name]}")
                 viables.update({"Best "+name:500})
+                print(f"[{len(viables)-1}] Best {name}. Cost: {viables["Best "+name]}")
+            if power==2:
+                viables.update({"Good "+name:250})
+                print(f"[{len(viables)-1}] Good {name}. Cost: {viables["Good "+name]}")
+                viables.update({"Best "+name:500})
+                print(f"[{len(viables)-1}] Best {name}. Cost: {viables["Best "+name]}")
             if power==3:
-                viables.update({"Good "+name:250})
                 viables.update({"Best "+name:500})
-            if power==4:
-                viables.update({"Best "+name:500})
+                print(f"[{len(viables)-1}] Best {name}. Cost: {viables["Best "+name]}")
         canBuy("butcher tools",self.tools)
         canBuy("incubater",self.incubatetool)
         canBuy("egg basket",self.laytool)
         canBuy("milker",self.milktool)
-        viables.update({f"[{len(viables)}] Land for hat factory":500})
-        viables.update({f"[{len(viables)}] Workers for hat factory":1000})
-        viables.update({f"[{len(viables)}] Materials to build hat factory":1500})
-        for name, cost in enumerate(viables):
-            print(f"[{len(viables)}] {name}. Cost: {cost}")
+        viables.update({f"[{len(viables)-1}] Land for hat factory":500})
+        viables.update({f"[{len(viables)-1}] Workers for hat factory":1000})
+        viables.update({f"[{len(viables)-1}] Materials to build hat factory":1500})
+        print(f"[{len(viables)-3}] Land for hat factory. Cost: 500")
+        print(f"[{len(viables)-2}] Workers for hat factory. Cost: 1000")
+        print(f"[{len(viables)-1}] Materials to build hat factory. Cost: 1500")
         indexviable={}
-        for index, name in enumerate(viables.values):
+        for index, name in enumerate(viables.keys()):
             indexviable.update({index:name})
         print("[C] Cancel.")
         while True:
-            choice=input(f"You have {self.money} dollars. What would you like to buy?")
-            
-
-
-    def MarketBuyStuff(self, stuff):
-        pass
-    def StageTwo(self):
-        pass
+            choice=input(f"You have {self.money} dollars. What would you like to buy? ")
+            if [str(i) for i in range(len(viables))].count(choice)!=0:
+                bought=(indexviable[int(choice)]).split()
+                cost=viables[indexviable[int(choice)]]
+                self.money-=cost
+                if self.money>cost:
+                    if bought.count("butcher")!=0:
+                        self.tools+=1
+                    elif bought.count("incubater")!=0:
+                        self.incubatetool+=1
+                    elif bought.count("egg")!=0:
+                        self.laytool+=1
+                    elif bought.count("milker")!=0:
+                        self.milktool+=1
+                    elif bought.count("factory")!=0:
+                        pass
+                    self.incubated+=1
+                    self.milked+=1
+                    self.laid+=1
+                    print(f"You bought {indexviable[int(choice)]} for {cost} dollars. You now have {self.money} dollars.")
+                    self.Loop()
+                    break
+                else:
+                    print("You don't have enough money.")
+                    continue
+            else:
+                try:
+                    if choice.upper()=="C":
+                        self.Loop()
+                        break
+                    else:
+                        continue
+                except:
+                    continue
     def Loop(self):
         self.IndexCommand={}
         self.viables=[]
@@ -353,6 +397,8 @@ class Commands():
             self.Incubate()
         elif self.IndexCommand[choice]=="Finances":
             self.Finance()
+        elif self.IndexCommand[choice]=="Market":
+            self.MarketEnter()
 class ChungusController():
     def __init__(self,Console,Next,me):
         self.myWeight={}
@@ -453,8 +499,6 @@ class ChungusController():
             self.Console.chungus -=1
         print(f"You now have " + str(self.Console.inventory["Chungus Meat"]) + " Chungus Meat")
         self.Console.Loop()
-    def Sell(self,target, market, day):
-        pass
 class ChungiController():
     def __init__(self,Console,Next,me):
         self.myWeight={}
@@ -557,10 +601,6 @@ class ChungiController():
             self.myWeight.pop(target)
             self.Console.chungi -=1
         self.Console.Loop()
-    def Sell(self,target,market,day):
-        pass
-    def Lay(self,target,market):
-        pass
 class ChungoidController():
     def __init__(self,Console,me):
         self.myWeight={}
@@ -648,13 +688,14 @@ class EggController():
         for i in range(math.floor((self.Console.chungi*0.2)+1)*self.Console.laytool):
             self.myWeight.update({self.Console.GlobalIDnumber:1})
             self.myGrowth.update({self.Console.GlobalIDnumber:0})
+            self.Console.chungus_egg+=1
             self.Console.GlobalIDnumber+=1
             print(f"You managed to get your Chungi to lay an egg.")
     def Incubate(self):
         self.Console.milked+=1
         self.Console.laid+=1
         self.destroy=[]
-        for growth, key in enumerate(self.myGrowth):
+        for key in self.myGrowth.keys():
             self.myGrowth[key]+=math.floor(self.Console.incubatetool*random.uniform(0,3))
             if self.myGrowth[key]>=self.GrowConstant:
                 self.destroy.append(key)
@@ -693,5 +734,4 @@ you.ChungiController=MainChungiController
 you.ChungusController=MainChungusController
 you.ChungoidController=MainChungoidController
 you.Egg=MainEggController
-print(MainChungoidController.myGrowth)
 you.Loop()
