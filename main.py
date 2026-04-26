@@ -42,6 +42,7 @@ class Commands():
         self.incubatetool=1
         self.laytool=1
         self.networth=0
+        self.factory=0
     def Help(self):
         for name, instructions in self.D_UnlockedCommands.items():
             print(f"{name}: {instructions}")
@@ -239,7 +240,7 @@ class Commands():
         while True:
             print("[0] Sell")
             print("[1] Buy")
-            print("[C] Cancel")
+            print("[C] Cancel.")
             choice=input("Which would like to do?")
             if choice.upper()=="C":
                 self.Loop()
@@ -255,10 +256,10 @@ class Commands():
             if sellables.count(name) and amount != 0:
                 viables.append(name)
                 print(f"[{len(self.viables)-1}] {name}") 
-        print("[C] Cancel")
+        print("[C] Cancel.")
         if len(viables)!=0:
             while True:
-                choice = input("Which would you like to sell?")
+                choice = input("Which would you like to sell? ")
                 if [str(i) for i in range(len(viables))].count(choice)!=0:
                     if viables[choice]=="Chungus Meat":
                         self.money+=(self.inventory["Chungus Meat"]*5)
@@ -291,37 +292,35 @@ class Commands():
             print("You have nothing to sell.")
             self.Loop()
     def MarketBuy(self):
-        viables=[]
-        if self.incubatetool!=5:
-            print(f"[{len(viables)}] Better incubaters")
-            viables.append("incubate")
-        if self.laytool!=5:
-            print(f"[{len(viables)}] Better nest grass(improves egg laying)")
-            viables.append("lay")
-        if self.milktool!=5:
-            print(f"[{len(viables)}] Better milking tools")
-            viables.append("milk")
-        if self.tools!=5:
-            print(f"[{len(viables)}] Better butchering tools")
-            viables.append("butcher")
-        print(f"[{len(viables)}] Farmer hat factory")
-        viables.append("end")
-        print("[C] Cancel")
+        viables={}
+        def canBuy(name,power):
+            if power==1:
+                viables.update({"OK "+name:100})
+                viables.update({"Good "+name:250})
+                viables.update({"Best "+name:500})
+            if power==3:
+                viables.update({"Good "+name:250})
+                viables.update({"Best "+name:500})
+            if power==4:
+                viables.update({"Best "+name:500})
+        canBuy("butcher tools",self.tools)
+        canBuy("incubater",self.incubatetool)
+        canBuy("egg basket",self.laytool)
+        canBuy("milker",self.milktool)
+        viables.update({f"[{len(viables)}] Land for hat factory":500})
+        viables.update({f"[{len(viables)}] Workers for hat factory":1000})
+        viables.update({f"[{len(viables)}] Materials to build hat factory":1500})
+        for name, cost in enumerate(viables):
+            print(f"[{len(viables)}] {name}. Cost: {cost}")
+        indexviable={}
+        for index, name in enumerate(viables.values):
+            indexviable.update({index:name})
+        print("[C] Cancel.")
         while True:
-            choice=input("Which would you like to buy?")
-            if [str(i) for i in range(len(viables))].count(choice)!=0:
-                if int(choice)<len(viables)-1:
-                    self.MarketBuyStuff(self.viables[choice])
-                    break
-            else:
-                try:
-                    if choice.upper()=="C":
-                        self.Loop()
-                        break
-                    else:
-                        continue
-                    except:
-                        continue
+            choice=input(f"You have {self.money} dollars. What would you like to buy?")
+            
+
+
     def MarketBuyStuff(self, stuff):
         pass
     def StageTwo(self):

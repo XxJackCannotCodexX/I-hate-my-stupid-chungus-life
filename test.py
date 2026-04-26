@@ -1,5 +1,3 @@
-if 2==1:
-    fly="hi"
-else:
-    fly="bye"
-print(fly)
+hi={}
+hi.update({len(hi):"hi"})
+print(hi)
