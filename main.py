@@ -360,19 +360,19 @@ class Commands():
         def canBuy(name,power):
             if power==1:
                 viables.update({"OK "+name:100})
-                print(f"[{len(viables)-1}] OK {name}. Cost: {viables["OK "+name]} dollars")
+                print(f"[{len(viables)-1}] OK {name}. Cost: {viables['OK '+name]} dollars")
                 viables.update({"Good "+name:250})
-                print(f"[{len(viables)-1}] Good {name}. Cost: {viables["Good "+name]} dollars")
+                print(f"[{len(viables)-1}] Good {name}. Cost: {viables['Good '+name]} dollars")
                 viables.update({"Best "+name:500})
-                print(f"[{len(viables)-1}] Best {name}. Cost: {viables["Best "+name]} dollars")
+                print(f"[{len(viables)-1}] Best {name}. Cost: {viables['Best '+name]} dollars")
             if power==1.5:
                 viables.update({"Good "+name:250})
-                print(f"[{len(viables)-1}] Good {name}. Cost: {viables["Good "+name]} dollars")
+                print(f"[{len(viables)-1}] Good {name}. Cost: {viables['Good '+name]} dollars")
                 viables.update({"Best "+name:500})
-                print(f"[{len(viables)-1}] Best {name}. Cost: {viables["Best "+name]} dollars")
+                print(f"[{len(viables)-1}] Best {name}. Cost: {viables['Best '+name]} dollars")
             if power==2:
                 viables.update({"Best "+name:500})
-                print(f"[{len(viables)-1}] Best {name}. Cost: {viables["Best "+name]} dollars")
+                print(f"[{len(viables)-1}] Best {name}. Cost: {viables['Best '+name]} dollars")
         canBuy("butcher tools",self.tools)
         canBuy("incubater",self.incubatetool)
         canBuy("egg basket",self.laytool)
@@ -384,11 +384,11 @@ class Commands():
         if self.factory.count(3)==0:
             viables.update({f"Materials to build hat factory":1500})
         if self.factory.count(1)==0:    
-            print(f"[{list(viables.keys()).index("Land for hat factory")}] Land for hat factory. Cost: 500")
+            print(f"[{list(viables.keys()).index('Land for hat factory')}] Land for hat factory. Cost: 500")
         if self.factory.count(2)==0:
-            print(f"[{list(viables.keys()).index("Workers for hat factory")}] Workers for hat factory. Cost: 1000")
+            print(f"[{list(viables.keys()).index('Workers for hat factory')}] Workers for hat factory. Cost: 1000")
         if self.factory.count(3)==0:
-            print(f"[{list(viables.keys()).index("Materials to build hat factory")}] Materials to build hat factory. Cost: 1500")
+            print(f"[{list(viables.keys()).index('Materials to build hat factory')}] Materials to build hat factory. Cost: 1500")
         indexviable={}
         for index, name in enumerate(viables.keys()):
             indexviable.update({index:name})
@@ -650,10 +650,10 @@ class ChungiController():
             target = random.choice(list(self.myGrowth.keys()))
             if list(self.Console.inventory.keys()).count("Chungus Meat") == 0:
                 self.Console.inventory.update({"Chungus Meat": (math.ceil(1+(math.floor(self.myWeight[target]/10))*tools))+2})
-                print(f"You now have {str(self.Console.inventory["Chungus Meat"])} Chungus Meat")
+                print(f"You now have {str(self.Console.inventory['Chungus Meat'])} Chungus Meat")
             else:
                 self.Console.inventory["Chungus Meat"] = self.Console.inventory["Chungus Meat"] + (math.ceil(1+(math.floor(self.myWeight[target]/10))*tools)+2)
-                print("You now have " + str(self.Console.inventory["Chungus Meat"]) + " Chungus Meat")
+                print("You now have " + str(self.Console.inventory['Chungus Meat']) + " Chungus Meat")
             self.myGrowth.pop(target)
             self.myWeight.pop(target)
             self.Console.chungi -=1
