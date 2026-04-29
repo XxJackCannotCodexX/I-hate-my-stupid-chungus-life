@@ -452,6 +452,7 @@ class Commands():
                 except:
                     continue
     def Loop(self):
+        time.sleep(0.5)
         if len(self.factory)!=3:
             self.IndexCommand={}
             self.viables=[]
@@ -533,6 +534,8 @@ class ChungusController():
             self.myWeight[target]+=food
             self.myGrowth[target]+=food
             self.GrowUp(target)
+        print(f"You fed one of your Chungus. It now weighs {self.myWeight[target]} pounds.")
+        self.Console.Loop()
     def GrowUp(self,target):
             if self.myGrowth[target] >= self.GrowConstant:
                 print("One of your chungus grew into a chungi.")
@@ -541,9 +544,6 @@ class ChungusController():
                 self.myGrowth.pop(target)
                 self.Next.myGrowth.update({target:0})
                 self.Next.myWeight.update({target:math.floor(self.myWeight.pop(target)*1.5+5)})
-                self.Console.Loop()
-            else:
-                self.Console.Loop()
     def Butcher(self,Feedtype,tools):
         self.Console.incubated+=1
         self.Console.milked+=1
@@ -595,42 +595,43 @@ class ChungiController():
         self.Console.milked+=1
         self.Console.laid+=1
         if Feedtype==0:
-            biggie = random.choice(list(self.myGrowth.keys()))
-            self.myWeight[biggie]+=food
-            self.myGrowth[biggie]+=food
-            self.GrowUp(biggie)
+            target = random.choice(list(self.myGrowth.keys()))
+            self.myWeight[target]+=food
+            self.myGrowth[target]+=food
+            self.GrowUp(target)
         elif Feedtype==1:
-            biggest=list(self.myWeight.keys())[0]
+            target=list(self.myWeight.keys())[0]
             for ident, weight in self.myWeight.items():
-                if weight>self.myWeight[biggest]:
-                    biggest=ident
-            self.myWeight[biggest]+=food
-            self.myGrowth[biggest]+=food
-            self.GrowUp(biggest)
+                if weight>self.myWeight[target]:
+                    target=ident
+            self.myWeight[target]+=food
+            self.myGrowth[target]+=food
+            self.GrowUp(target)
         elif Feedtype==2:
-            smallest=list(self.myWeight.keys())[0]
+            target=list(self.myWeight.keys())[0]
             for ident, weight in self.myWeight.items():
-                if weight>self.myWeight[smallest]:
-                    smallest=ident
-            self.myWeight[smallest]+=food
-            self.myGrowth[smallest]+=food
-            self.GrowUp(smallest)
+                if weight>self.myWeight[target]:
+                    target=ident
+            self.myWeight[target]+=food
+            self.myGrowth[target]+=food
+            self.GrowUp(target)
         elif Feedtype==3:
-            biggest=list(self.myGrowth.keys())[0]
+            target=list(self.myGrowth.keys())[0]
             for ident, weight in self.myGrowth.items():
-                if weight>self.myGrowth[biggest]:
-                    biggest=ident
-            self.myWeight[biggest]+=food
-            self.myGrowth[biggest]+=food
-            self.GrowUp(biggest)
+                if weight>self.myGrowth[target]:
+                    target=ident
+            self.myWeight[target]+=food
+            self.myGrowth[target]+=food
+            self.GrowUp(target)
         elif Feedtype==4:
-            smallest=list(self.myWeight.keys())[0]
+            target=list(self.myWeight.keys())[0]
             for ident, weight in self.myGrowth.items():
-                if weight>self.myGrowth[smallest]:
-                    smallest=ident
-            self.myWeight[smallest]+=food
-            self.myGrowth[smallest]+=food
-            self.GrowUp(smallest)
+                if weight>self.myGrowth[target]:
+                    target=ident
+            self.myWeight[target]+=food
+            self.myGrowth[target]+=food
+            self.GrowUp(target)
+        print(f"You fed one of your Chungi. It now weighs {self.myWeight[target]} pounds.")
         self.Console.Loop()
     def GrowUp(self,target):
             if self.myGrowth[target] >= self.GrowConstant:
@@ -757,6 +758,7 @@ class ChungoidController():
                     target=ident
             self.myWeight[target]+=food
             self.myGrowth[target]+=food
+        print(f"You fed one of your Chungoid. It now weighs {self.myWeight[target]} pounds.")
         self.Console.Loop()
 class EggController():
     def __init__(self,Console,Next,me):
@@ -775,6 +777,7 @@ class EggController():
             self.Console.GlobalIDnumber+=1
             print(f"You managed to get your Chungi to lay an egg.")
     def Incubate(self):
+        print(f"You incubated your {self.Console.chungus_egg} eggs.")
         self.destroy=[]
         for key in self.myGrowth.keys():
             self.myGrowth[key]+=math.floor(self.Console.incubatetool*random.uniform(0,3))

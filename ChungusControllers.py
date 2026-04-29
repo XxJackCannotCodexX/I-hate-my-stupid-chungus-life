@@ -95,5 +95,3 @@ class ChungusController():
             self.Console.chungus -=1
         print(f"You now have " + str(self.Console.inventory["Chungus Meat"]) + " Chungus Meat")
         self.Console.Loop()
-    def Sell(self,target, market, day):
-        pass
